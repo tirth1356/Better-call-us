@@ -60,7 +60,10 @@ export default function LandingPage() {
                     Explore Dashboards
                   </button>
                 </Link>
-                <button className="border border-outline-variant/40 hover:bg-surface-container-low text-primary px-8 py-4 rounded-2xl font-headline font-bold text-lg transition-all">
+                <button 
+                  onClick={() => setShowSpecs(true)}
+                  className="border border-outline-variant/40 hover:bg-surface-container-low text-primary px-8 py-4 rounded-2xl font-headline font-bold text-lg transition-all"
+                >
                   Technical Specs
                 </button>
               </div>
@@ -79,35 +82,36 @@ export default function LandingPage() {
           <div className="max-w-screen-2xl mx-auto px-6 md:px-10">
             <div className="mb-16">
               <h2 className="text-[0.75rem] font-bold tracking-[0.3em] text-secondary uppercase font-label mb-4">Active Observatories</h2>
-              <h3 className="text-4xl md:text-5xl font-headline font-bold text-on-surface tracking-tight">Deployment Sites</h3>
+              <h3 className="text-4xl md:text-5xl font-headline font-bold text-on-surface tracking-tight">Intelligence Nodes</h3>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {temples.map((temple) => (
                 <Link key={temple.id} to={temple.to} className="group flex flex-col bg-white rounded-[2.5rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-[#C08552]/10 p-3">
-                  <div className="relative h-[280px] rounded-[1.8rem] overflow-hidden mb-6">
+                  <div className="relative h-[250px] rounded-[1.8rem] overflow-hidden mb-6">
                     <img src={temple.img} className="absolute inset-0 w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" alt={temple.name} />
                     <div className="absolute top-4 left-4 bg-white/90 backdrop-blur rounded-full px-3 py-1 flex items-center gap-2 border border-white/20">
                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                       <span className="text-[8px] font-black text-[#4B2E2B] uppercase tracking-widest">Active Node</span>
+                       <span className="text-[8px] font-black text-[#4B2E2B] uppercase tracking-widest">Active</span>
                     </div>
                   </div>
                   
                   <div className="px-5 pb-5 flex-1 flex flex-col">
                     <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-2 font-label">Site GJ-{temple.id.slice(-3)}</span>
-                    <h4 className="text-2xl font-headline font-black text-[#4B2E2B] leading-none mb-4 group-hover:text-primary transition-colors">{temple.name}</h4>
-                    <p className="text-xs text-[#4B2E2B]/50 leading-relaxed font-body">
-                      {temple.desc}
+                    <h4 className="text-2xl font-headline font-black text-[#4B2E2B] leading-none mb-3 group-hover:text-primary transition-colors">{temple.name}</h4>
+                    <p className="text-[10px] text-[#4B2E2B]/50 leading-relaxed font-body">
+                      Monitoring real-time corridor pressure and entry flow dynamic.
                     </p>
                     
-                    <div className="mt-auto pt-6 flex items-center justify-between">
-                       <span className="text-[10px] font-black text-secondary uppercase tracking-widest border-b border-secondary/20 pb-0.5">Enter Observatory</span>
-                       <div className="w-10 h-10 rounded-2xl bg-primary/5 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all transform group-hover:rotate-12">
-                          <span className="material-symbols-outlined text-sm">rocket_launch</span>
+                    <div className="mt-auto pt-4 flex items-center justify-between">
+                       <span className="text-[8px] font-black text-secondary uppercase tracking-widest">Observatory</span>
+                       <div className="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
+                          <span className="material-symbols-outlined text-xs">rocket_launch</span>
                        </div>
                     </div>
                   </div>
                 </Link>
               ))}
+
             </div>
           </div>
         </section>

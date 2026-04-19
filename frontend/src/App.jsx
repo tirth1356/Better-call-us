@@ -6,7 +6,6 @@ import DwarkaDashboard from "./pages/DwarkaDashboard";
 import SomnathDashboard from "./pages/SomnathDashboard";
 import PavagadhDashboard from "./pages/PavagadhDashboard";
 import AgencyDashboard from "./pages/AgencyDashboard";
-import ReplayMode from "./pages/ReplayMode";
 
 function ScrollToTop() {
   const { pathname } = useLocation();
@@ -31,7 +30,6 @@ export default function App() {
         <Route path="/police" element={<AgencyDashboard />} />
         <Route path="/trust" element={<AgencyDashboard />} />
         <Route path="/transport" element={<AgencyDashboard />} />
-        <Route path="/replay" element={<ReplayMode />} />
       </Routes>
     </BrowserRouter>
   );

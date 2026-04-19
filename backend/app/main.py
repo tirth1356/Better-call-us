@@ -24,7 +24,35 @@ app.add_middleware(
 
 # In-memory storage for hackathon simplicity
 alerts_db = []
-logs_db = []
+logs_db = [
+    {
+        "id": str(uuid.uuid4()),
+        "timestamp": (datetime.datetime.now() - datetime.timedelta(minutes=45)).isoformat(),
+        "payload": {
+            "cpi": 4.2, "risk": "Moderate", "predicted_cpi": 3.8, "predicted_window_min": 25, "buildup": "Normal", "confidence": "88%",
+            "raw_data": {"timestamp": (datetime.datetime.now() - datetime.timedelta(minutes=45)).isoformat(), "location": "Somnath"},
+            "ai_coordination": {"alert_summary": "Morning crowd surge handled via alternate exits."}
+        }
+    },
+    {
+        "id": str(uuid.uuid4()),
+        "timestamp": (datetime.datetime.now() - datetime.timedelta(minutes=30)).isoformat(),
+        "payload": {
+            "cpi": 8.7, "risk": "Severe", "predicted_cpi": 9.2, "predicted_window_min": 8, "buildup": "Genuine", "confidence": "94%",
+            "raw_data": {"timestamp": (datetime.datetime.now() - datetime.timedelta(minutes=30)).isoformat(), "location": "Somnath"},
+            "ai_coordination": {"alert_summary": "Sector 3 bottleneck detected. Police deployment recommended."}
+        }
+    },
+     {
+        "id": str(uuid.uuid4()),
+        "timestamp": (datetime.datetime.now() - datetime.timedelta(minutes=10)).isoformat(),
+        "payload": {
+            "cpi": 5.1, "risk": "Normal", "predicted_cpi": 4.2, "predicted_window_min": 40, "buildup": "Normal", "confidence": "91%",
+            "raw_data": {"timestamp": (datetime.datetime.now() - datetime.timedelta(minutes=10)).isoformat(), "location": "Somnath"},
+            "ai_coordination": {"alert_summary": "Situation stabilized. Normal operations resumed."}
+        }
+    }
+]
 
 # Global ML Model Instance
 ml_model = CrowdPredictionModel()
@@ -116,6 +144,7 @@ async def predict_risk(data: CrowdData):
 
     # 4. Check for Alerts (Only trigger for Severe/Critical to avoid nuisance alarms)
     alert_triggered = False
+    new_alert = None
     if risk in ["Severe", "Critical"] and predicted_window_min <= 10 and buildup == "Genuine":
         alert_triggered = True
         new_alert = {
@@ -131,10 +160,16 @@ async def predict_risk(data: CrowdData):
         alerts_db.append(new_alert)
         response_payload["alert"] = new_alert
 
-    # Log event
-    logs_db.append(response_payload)
+    # 5. Log event to Archive
+    archive_entry = {
+        "id": str(uuid.uuid4()),
+        "timestamp": datetime.datetime.now().isoformat(),
+        "payload": response_payload
+    }
+    logs_db.append(archive_entry)
+    if len(logs_db) > 500: logs_db.pop(0)
 
-    # 5. Broadcast via WebSockets
+    # 6. Broadcast via WebSockets
     ws_message = {
         "type": "crowd_update",
         "data": response_payload
@@ -142,6 +177,15 @@ async def predict_risk(data: CrowdData):
     await manager.broadcast(ws_message)
 
     return response_payload
+
+@app.get("/archive")
+async def get_archive():
+    return {"history": logs_db}
+
+@app.get("/events")
+async def get_events():
+    # Helper for legacy replay components
+    return {"events": [l["payload"] for l in logs_db]}
 
 
 @app.post("/acknowledge")
@@ -190,9 +234,7 @@ async def chat_with_ai(request: ChatRequest):
     
     return {"response": completion.choices[0].message.content}
 
-@app.get("/events")
-async def get_events():
-    return {"events": logs_db}
+
 
 
 # In-memory session tracking

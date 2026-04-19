@@ -10,11 +10,13 @@ import AlertModal from "../components/dashboard/AlertModal";
 import GraphSection from "../components/dashboard/GraphSection";
 import InsightPanel from "../components/dashboard/InsightPanel";
 import SectorCard from "../components/dashboard/SectorCard";
+import AiChatPanel from "../components/dashboard/AiChatPanel";
+import HistoryReplaySection from "../components/dashboard/HistoryReplaySection";
 import { useDashboardStore } from "../store/dashboardStore";
 import { X, History, Activity } from "lucide-react";
 
 export default function SomnathDashboard() {
-  const { alerts, pressureIndex, flowVelocity, sensorCount, connectWebsocket, risk, predictedWindow, rawData, setActiveLocation } = useDashboardStore();
+  const { alerts, pressureIndex, flowVelocity, sensorCount, connectWebsocket, risk, predictedWindow, rawData, setActiveLocation, showHistory } = useDashboardStore();
   const [showAuditLog, setShowAuditLog] = useState(false);
   const [auditData, setAuditData] = useState([]);
 
@@ -68,19 +70,19 @@ export default function SomnathDashboard() {
                                   </tr>
                               </thead>
                               <tbody className="text-sm">
-                                  {auditData.slice().reverse().map((entry, idx) => (
-                                      <tr key={idx} className="border-b last:border-0 hover:bg-stone-50 transition-colors">
-                                          <td className="py-4 font-mono text-xs opacity-60">{new Date(entry.raw_data.timestamp).toLocaleTimeString()}</td>
-                                          <td className="py-4 font-bold">
-                                              <span className={`px-2 py-0.5 rounded-full text-[10px] ${entry.risk === 'High' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
-                                                  {entry.risk}
-                                              </span>
-                                          </td>
-                                          <td className="py-4 font-black">{entry.cpi}</td>
-                                          <td className="py-4 text-[#C08552] font-bold">{entry.predicted_window_min} min</td>
-                                          <td className="py-4 opacity-70 italic text-xs">{entry.buildup}</td>
-                                      </tr>
-                                  ))}
+                                   {auditData.slice().reverse().map((entry, idx) => (
+                                       <tr key={idx} className="border-b last:border-0 hover:bg-stone-50 transition-colors">
+                                           <td className="py-4 font-mono text-xs opacity-60">{entry.raw_data?.timestamp || entry.payload?.raw_data?.timestamp ? new Date(entry.raw_data?.timestamp || entry.payload?.raw_data?.timestamp).toLocaleTimeString() : 'N/A'}</td>
+                                           <td className="py-4 font-bold">
+                                               <span className={`px-2 py-0.5 rounded-full text-[10px] ${entry.payload?.risk === 'High' || entry.risk === 'High' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
+                                                   {entry.payload?.risk || entry.risk}
+                                               </span>
+                                           </td>
+                                           <td className="py-4 font-black">{entry.payload?.cpi || entry.cpi}</td>
+                                           <td className="py-4 text-[#C08552] font-bold">{entry.payload?.predicted_window_min || entry.predicted_window_min} min</td>
+                                           <td className="py-4 opacity-70 italic text-xs">{entry.payload?.buildup || entry.buildup}</td>
+                                       </tr>
+                                   ))}
                               </tbody>
                           </table>
                       </div>
@@ -212,6 +214,9 @@ export default function SomnathDashboard() {
             <AgencyPanel />
             <AiChatPanel />
           </div>
+
+          {/* 📊 Integrated History Replay 📊 */}
+          {showHistory && <HistoryReplaySection />}
 
           {/* Footer strip */}
           <motion.div className="flex items-center justify-between pt-4 border-t border-[#C08552]/10">

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
-import { BarChart2, Shield, Church, Bus } from "lucide-react";
+import { BarChart2, Shield, Landmark, Bus } from "lucide-react";
 import { useDashboardStore } from "../../store/dashboardStore";
 
 export default function DashboardSidebar() {
@@ -18,7 +18,7 @@ export default function DashboardSidebar() {
   const navItems = [
     { icon: BarChart2, label: "Live Overview", to: overviewPath, desc: "Main Dashboard" },
     { icon: Shield, label: "District Police", to: "/police", id: "police" },
-    { icon: Church, label: "Temple Trust", to: "/trust", id: "temple" },
+    { icon: Landmark, label: "Temple Trust", to: "/trust", id: "temple" },
     { icon: Bus, label: "GSRTC Hub", to: "/transport", id: "transport" },
   ];
 

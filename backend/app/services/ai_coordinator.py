@@ -34,6 +34,15 @@ Keep instructions short, professional, and highly specific to the data provided.
 """
 
 def get_agency_coordination(data):
+    risk = data.get('risk', 'Normal')
+    if risk in ['Low', 'Moderate', 'Normal']:
+        return {
+            "police": "Standard patrol and monitoring.",
+            "temple": "Maintain general queuing protocols.",
+            "transport": "Continue regular schedules.",
+            "alert_summary": f"Observing nominal flow dynamics ({risk} Risk). Maintain existing protocols."
+        }
+
     if not os.getenv("GROQ_API_KEY") or os.getenv("GROQ_API_KEY") == "your_groq_api_key_here":
         return {
             "police": "Deploy crowd control units to main gate.",

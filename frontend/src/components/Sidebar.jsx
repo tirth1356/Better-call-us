@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
-import { BarChart2, Shield, Church, Bus, History, LogOut } from "lucide-react";
+import { BarChart2, Shield, Landmark, Bus, History, LogOut } from "lucide-react";
 import { useDashboardStore } from "../store/dashboardStore";
 
 export default function Sidebar({ title = "Control Panel" }) {
@@ -18,9 +18,8 @@ export default function Sidebar({ title = "Control Panel" }) {
   const navItems = [
     { icon: BarChart2, label: "Live Overview", to: overviewPath, desc: "Observatory" },
     { icon: Shield, label: "District Police", to: "/police", id: "police" },
-    { icon: Church, label: "Temple Trust", to: "/trust", id: "temple" },
+    { icon: Landmark, label: "Temple Trust", to: "/trust", id: "temple" },
     { icon: Bus, label: "GSRTC Hub", to: "/transport", id: "transport" },
-    { icon: History, label: "Replay Mode", to: "/replay", desc: "Historical Analysis" },
     { icon: LogOut, label: "Exit to Home", to: "/", desc: "Global Overview" },
   ];
 

@@ -11,6 +11,7 @@ import GraphSection from "../components/dashboard/GraphSection";
 import InsightPanel from "../components/dashboard/InsightPanel";
 import SectorCard from "../components/dashboard/SectorCard";
 import AiChatPanel from "../components/dashboard/AiChatPanel";
+import HistoryReplaySection from "../components/dashboard/HistoryReplaySection";
 import { useDashboardStore } from "../store/dashboardStore";
 
 const SECTORS = [
@@ -30,7 +31,7 @@ const itemVariants = {
 };
 
 export default function DwarkaDashboard() {
-  const { alerts, pressureIndex, flowVelocity, sensorCount, setActiveLocation, connectWebsocket } = useDashboardStore();
+  const { alerts, pressureIndex, flowVelocity, sensorCount, setActiveLocation, connectWebsocket, showHistory } = useDashboardStore();
 
   useEffect(() => {
     setActiveLocation("Dwarka");
@@ -150,6 +151,9 @@ export default function DwarkaDashboard() {
             <AgencyPanel />
             <AiChatPanel />
           </motion.div>
+
+          {/* 📊 Integrated History Replay 📊 */}
+          {showHistory && <HistoryReplaySection />}
 
           {/* Footer strip */}
           <motion.div variants={itemVariants} className="flex items-center justify-between pt-4 border-t border-[#C08552]/10">

@@ -5,7 +5,7 @@ import { useDashboardStore } from "../../store/dashboardStore";
 import { getRiskConfig } from "../../utils/riskUtils";
 
 export default function DashboardNav({ templeName = "Ambaji Temple" }) {
-  const { risk, alerts, simulateEscalation, simulateNormal, resetSimulation } = useDashboardStore();
+  const { risk, alerts, simulateEscalation, simulateNormal, resetSimulation, showHistory, setShowHistory } = useDashboardStore();
   const cfg = getRiskConfig(risk);
   const unread = alerts.filter((a) => a.type === "critical").length;
 
@@ -52,11 +52,25 @@ export default function DashboardNav({ templeName = "Ambaji Temple" }) {
             <span className="text-[10px] font-black text-red-600 uppercase tracking-widest">LIVE</span>
           </div>
 
-          {/* Demo escalation buttons */}
-          <div className="hidden lg:flex gap-1">
+          {/* Global Controls */}
+          <div className="hidden lg:flex gap-2">
+            <button 
+              onClick={() => {
+                setShowHistory(!showHistory);
+                if (!showHistory) {
+                  setTimeout(() => {
+                    document.getElementById('replay-section')?.scrollIntoView({ behavior: 'smooth' });
+                  }, 100);
+                }
+              }}
+              className={`flex items-center gap-2 text-[10px] font-black px-4 py-1.5 rounded-xl transition-all shadow-md active:scale-95 ${showHistory ? 'bg-primary text-white' : 'bg-[#8C5A3C] text-white hover:bg-[#4B2E2B]'}`}
+            >
+              <span className="material-symbols-outlined text-sm">history</span>
+              {showHistory ? "CLOSE REPLAY" : "MISSION REPLAY"}
+            </button>
             <button
               onClick={() => { simulateNormal(); resetSimulation(); }}
-              className="text-[9px] font-black px-2 py-1 rounded-lg bg-[#C08552]/10 text-[#8C5A3C] hover:bg-[#C08552]/20 transition-colors uppercase tracking-wider"
+              className="text-[10px] font-black px-3 py-1.5 rounded-xl bg-[#C08552]/10 text-[#8C5A3C] hover:bg-[#C08552]/20 transition-colors uppercase tracking-wider"
             >
               Reset
             </button>

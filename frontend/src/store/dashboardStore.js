@@ -31,6 +31,9 @@ export const useDashboardStore = create((set, get) => ({
   lastAlertId: null,
   ws: null,
   isConnecting: false,
+  showHistory: false,
+
+  setShowHistory: (val) => set({ showHistory: val }),
 
   setRisk: (risk) => set({ risk }),
   setRiskPercent: (percent) => set({ riskPercent: percent }),

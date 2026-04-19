@@ -7,7 +7,7 @@ import RiskCard from "../components/dashboard/RiskCard";
 import CountdownTimer from "../components/dashboard/CountdownTimer";
 import AgencyPanel from "../components/dashboard/AgencyPanel";
 import AlertModal from "../components/dashboard/AlertModal";
-import { Shield, Church, Bus, AlertTriangle, CheckCircle, Info } from "lucide-react";
+import { Shield, Landmark, Bus, AlertTriangle, CheckCircle, Info } from "lucide-react";
 import { useDashboardStore } from "../store/dashboardStore";
 
 export default function AgencyDashboard() {
@@ -32,7 +32,7 @@ export default function AgencyDashboard() {
   if (pathname === "/trust") {
     agency = {
       name: "Temple Trust",
-      icon: Church,
+      icon: Landmark,
       color: "#92400e",
       bgColor: "#fef3c7",
       tasks: [

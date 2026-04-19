@@ -20,7 +20,7 @@ const ACTIONS = {
 };
 
 export default function ActionPanel() {
-  const { risk } = useDashboardStore();
+  const { risk, addLog } = useDashboardStore();
   const cfg = getRiskConfig(risk);
   const actions = ACTIONS[risk] || ACTIONS.LOW;
   const [executed, setExecuted] = useState(false);
@@ -28,6 +28,10 @@ export default function ActionPanel() {
 
   const handleExecute = () => {
     setExecuted(true);
+    addLog(`Initiated ${risk} risk response protocol`, "Central Command");
+    actions.forEach(action => {
+      addLog(`Directive: ${action.label}`, "Central Command");
+    });
     setTimeout(() => setExecuted(false), 2500);
   };
 
