@@ -24,7 +24,7 @@ export default function DashboardNav({ templeName = "Ambaji Temple" }) {
               <span className="text-white text-xs font-black">CO</span>
             </div>
             <span className="text-base font-headline font-black text-[#4B2E2B] tracking-tight hidden sm:block">
-              Chronos Observatory
+              alertX
             </span>
           </Link>
         </div>

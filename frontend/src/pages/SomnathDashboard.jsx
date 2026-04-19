@@ -16,7 +16,7 @@ import { useDashboardStore } from "../store/dashboardStore";
 import { X, History, Activity } from "lucide-react";
 
 export default function SomnathDashboard() {
-  const { alerts, pressureIndex, flowVelocity, sensorCount, connectWebsocket, risk, predictedWindow, rawData, setActiveLocation, showHistory } = useDashboardStore();
+  const { alerts, pressureIndex, flowVelocity, sensorCount, connectWebsocket, risk, predictedWindow, rawData, setActiveLocation, showHistory, sourceMode, setSourceMode } = useDashboardStore();
   const [showAuditLog, setShowAuditLog] = useState(false);
   const [auditData, setAuditData] = useState([]);
 
@@ -98,17 +98,35 @@ export default function SomnathDashboard() {
           className="flex-1 lg:ml-64 p-6 lg:p-8 max-w-screen-2xl mx-auto w-full"
         >
           {/* Page header */}
-          <motion.div className="mb-8">
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-1.5 h-1.5 rounded-full bg-[#C08552]" />
-              <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-[#4B2E2B]/40">Site ID: GJ-001 · Gujarat, India</p>
+          <motion.div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-1.5 h-1.5 rounded-full bg-[#C08552]" />
+                <p className="text-[10px] font-bold tracking-[0.25em] uppercase text-[#4B2E2B]/40">Site ID: GJ-001 · Gujarat, India</p>
+              </div>
+              <h2 className="text-3xl font-headline font-black text-[#4B2E2B] tracking-tight">
+                Somnath <span className="text-[#C08552]">Observatory</span>
+              </h2>
+              <p className="text-sm text-[#4B2E2B]/50 mt-1 max-w-lg">
+                Historical analysis integrated with real-time data for precise stampede risk mitigation.
+              </p>
             </div>
-            <h2 className="text-3xl font-headline font-black text-[#4B2E2B] tracking-tight">
-              Somnath <span className="text-[#C08552]">Observatory</span>
-            </h2>
-            <p className="text-sm text-[#4B2E2B]/50 mt-1 max-w-lg">
-              Historical analysis integrated with real-time data for precise stampede risk mitigation.
-            </p>
+            
+            <div className="bg-white border border-[#C08552]/20 rounded-xl p-1 flex shadow-sm shrink-0">
+               <button 
+                 onClick={() => setSourceMode('dataset')}
+                 className={`px-4 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all ${sourceMode === 'dataset' ? 'bg-[#4B2E2B] text-white shadow-md' : 'text-[#4B2E2B]/50 hover:bg-stone-50'}`}
+               >
+                 Dataset Stream
+               </button>
+               <button 
+                 onClick={() => setSourceMode('video')}
+                 className={`px-4 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all flex items-center gap-2 ${sourceMode === 'video' ? 'bg-[#8C5A3C] text-white shadow-md' : 'text-[#4B2E2B]/50 hover:bg-stone-50'}`}
+               >
+                 <span className={`w-1.5 h-1.5 rounded-full ${sourceMode === 'video' ? 'bg-red-400 animate-pulse' : 'bg-transparent'}`} />
+                 Live Video Feed
+               </button>
+            </div>
           </motion.div>
 
           {/* ROW 1: Core KPI cards */}
@@ -218,16 +236,10 @@ export default function SomnathDashboard() {
           {/* 📊 Integrated History Replay 📊 */}
           {showHistory && <HistoryReplaySection />}
 
-          {/* Footer strip */}
-          <motion.div className="flex items-center justify-between pt-4 border-t border-[#C08552]/10">
+          <motion.div className="flex items-center justify-between pt-4 border-t border-[#C08552]/10 pb-8">
             <p className="text-[10px] text-[#4B2E2B]/30 font-body uppercase tracking-widest">
-              © 2024 Chronos Observatory · Stampede Window Predictor
+              © 2024 alertX. All rights reserved.
             </p>
-            <div className="flex gap-4">
-              {["Architecture", "Privacy", "API Docs", "Support"].map((l) => (
-                <a key={l} href="#" className="text-[10px] text-[#4B2E2B]/30 hover:text-[#C08552] transition-colors uppercase tracking-wider">{l}</a>
-              ))}
-            </div>
           </motion.div>
         </motion.main>
       </div>

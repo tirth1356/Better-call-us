@@ -338,10 +338,13 @@ class SimulationManager:
         except Exception as e:
             print(f"Simulation error for {temple}: {e}")
 
+import subprocess
+video_proc = None
 sim_manager = SimulationManager()
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
+    global video_proc
     await manager.connect(websocket)
     sim_task = None
     try:
@@ -353,14 +356,35 @@ async def websocket_endpoint(websocket: WebSocket):
                 # Stop existing task if any
                 if sim_task:
                     sim_task.cancel()
+                    sim_task = None
+                
+                if video_proc:
+                    try:
+                        video_proc.terminate()
+                    except:
+                        pass
+                    video_proc = None
                 
                 temple = message.get("temple", "somnath")
-                sim_task = asyncio.create_task(sim_manager.run_simulation(websocket, temple))
+                mode = message.get("mode", "dataset")
+
+                if mode == "video":
+                    print(f"🎬 Starting LIVE VIDEO MODE for {temple}")
+                    script_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "final", "crowd.py")
+                    video_proc = subprocess.Popen(["python", script_path])
+                else:
+                    sim_task = asyncio.create_task(sim_manager.run_simulation(websocket, temple))
                 
             elif message.get("type") == "stop_simulation":
                 if sim_task:
                     sim_task.cancel()
                     sim_task = None
+                if video_proc:
+                    try:
+                        video_proc.terminate()
+                    except:
+                        pass
+                    video_proc = None
 
     except WebSocketDisconnect:
         if sim_task:

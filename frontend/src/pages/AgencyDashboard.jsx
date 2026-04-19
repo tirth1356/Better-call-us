@@ -135,7 +135,7 @@ export default function AgencyDashboard() {
                 <div className="mt-8 p-4 bg-blue-50 border border-blue-100 rounded-2xl flex gap-3 text-blue-800">
                   <Info size={20} className="shrink-0" />
                   <p className="text-xs leading-relaxed">
-                    <strong>Coordination Note:</strong> All actions are synchronized across the Stampede Sentinel Network. 
+                    <strong>Coordination Note:</strong> All actions are synchronized across the alertX Network. 
                     Acknowledging an alert here will update the Central Command Center immediately.
                   </p>
                 </div>

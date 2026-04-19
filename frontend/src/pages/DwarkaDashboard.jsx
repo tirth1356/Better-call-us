@@ -156,15 +156,10 @@ export default function DwarkaDashboard() {
           {showHistory && <HistoryReplaySection />}
 
           {/* Footer strip */}
-          <motion.div variants={itemVariants} className="flex items-center justify-between pt-4 border-t border-[#C08552]/10">
+          <motion.div variants={itemVariants} className="flex items-center justify-between pt-4 border-t border-[#C08552]/10 pb-8">
             <p className="text-[10px] text-[#4B2E2B]/30 font-body uppercase tracking-widest">
-              © 2024 Chronos Observatory · Stampede Window Predictor
+              © 2024 alertX. All rights reserved.
             </p>
-            <div className="flex gap-4">
-              {["Architecture", "Privacy", "API Docs", "Support"].map((l) => (
-                <a key={l} href="#" className="text-[10px] text-[#4B2E2B]/30 hover:text-[#C08552] transition-colors uppercase tracking-wider">{l}</a>
-              ))}
-            </div>
           </motion.div>
         </motion.main>
       </div>

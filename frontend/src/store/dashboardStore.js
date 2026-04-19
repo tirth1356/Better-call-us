@@ -14,6 +14,7 @@ export const useDashboardStore = create((set, get) => ({
   flowVelocity: "1.80",
   sensorCount: 142,
   activeLocation: "Somnath",
+  sourceMode: "dataset",
   graphData: [
     { time: "00:00:00", real_cpi: 0, pred_cpi: 0 },
     { time: "00:00:00", real_cpi: 0, pred_cpi: 0 },
@@ -76,9 +77,23 @@ export const useDashboardStore = create((set, get) => ({
             { time: new Date().toLocaleTimeString(), real_cpi: 0, pred_cpi: 0 }
         ] 
     });
-    const { ws } = get();
+    const { ws, sourceMode } = get();
     if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ type: "start_simulation", temple: loc.toLowerCase() }));
+        ws.send(JSON.stringify({ type: "start_simulation", temple: loc.toLowerCase(), mode: sourceMode }));
+    }
+  },
+
+  setSourceMode: (mode) => {
+    set({ 
+        sourceMode: mode,
+        graphData: [
+            { time: new Date().toLocaleTimeString(), real_cpi: 0, pred_cpi: 0 },
+            { time: new Date().toLocaleTimeString(), real_cpi: 0, pred_cpi: 0 }
+        ] 
+    });
+    const { ws, activeLocation } = get();
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: "start_simulation", temple: activeLocation.toLowerCase(), mode: mode }));
     }
   },
 
@@ -99,7 +114,7 @@ export const useDashboardStore = create((set, get) => ({
       console.log("WebSocket Connected ✅");
       set({ ws: socket, isConnecting: false });
       // Sync initial location
-      socket.send(JSON.stringify({ type: "start_simulation", temple: get().activeLocation.toLowerCase() }));
+      socket.send(JSON.stringify({ type: "start_simulation", temple: get().activeLocation.toLowerCase(), mode: get().sourceMode }));
     };
 
     socket.onmessage = (event) => {

@@ -176,7 +176,7 @@ export default function LandingPage() {
                 </div>
                 <h2 className="text-5xl md:text-6xl font-headline font-black text-[#4B2E2B] mb-8 tracking-tighter leading-[0.9]">The Science <br/><span className="text-secondary">of Flow</span></h2>
                 <p className="text-lg text-[#4B2E2B]/60 font-body leading-relaxed mb-12 max-w-xl">
-                  Stampede Sentinel merges fluid dynamics with neural-link predictive modeling. We don't just count crowds; we simulate the kinetic pressure of every pilgrim to prevent the disaster before it starts.
+                  alertX merges fluid dynamics with neural-link predictive modeling. We don't just count crowds; we simulate the kinetic pressure of every pilgrim to prevent the disaster before it starts.
                 </p>
                 
                 <div className="space-y-8">

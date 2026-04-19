@@ -258,7 +258,7 @@ export default function ReplayMode() {
                </div>
                <div className="mt-8 pt-6 border-t border-stone-100 flex justify-between items-center">
                   <p className="text-[10px] font-black text-[#855324]/30 uppercase tracking-[0.3em]">Sentinel Multi-Nodal Analysis Layer 2.0</p>
-                  <p className="text-[10px] font-bold text-primary italic uppercase tracking-widest">Synchronized via Chronos Clock</p>
+                  <p className="text-[10px] font-bold text-primary italic uppercase tracking-widest">Synchronized via alertX Clock</p>
                </div>
             </div>
           </div>
