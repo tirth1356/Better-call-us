@@ -61,7 +61,7 @@ export const useDashboardStore = create((set, get) => ({
 
   addLog: (action, agency = "System") => {
     const newLog = {
-      id: Date.now(),
+      id: Date.now().toString() + "-" + Math.random().toString(36).substring(2, 9),
       time: new Date().toLocaleTimeString(),
       agency,
       action
@@ -97,6 +97,14 @@ export const useDashboardStore = create((set, get) => ({
     }
   },
 
+  toggleForceRisk: (status) => {
+    const { ws } = get();
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ type: "toggle_force_risk", status: status }));
+        get().addLog(`NEAR-CRUSH SIMULATION ${status ? 'ACTIVATED' : 'DEACTIVATED'}`, "SYSTEM-ADMIN");
+    }
+  },
+
   // 🔴 CONNECT TO LIVE BACKEND WEBSOCKET 🔴
   connectWebsocket: () => {
     const { ws, isConnecting, activeLocation } = get();
@@ -106,7 +114,7 @@ export const useDashboardStore = create((set, get) => ({
     if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) return;
 
     set({ isConnecting: true });
-    console.log("🚀 Sentinel Connection Initializing...");
+    console.log("🚀 AlertX Connection Initializing...");
     
     const socket = new WebSocket("ws://127.0.0.1:8000/ws");
 

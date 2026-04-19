@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import Navbar from "../components/Navbar";
@@ -33,134 +33,230 @@ const temples = [
 
 export default function LandingPage() {
   const [showSpecs, setShowSpecs] = useState(false);
+  const [currentImg, setCurrentImg] = useState(0);
+  const heroImages = [somnathTempleImage, ambajiTempleImage, dwarkaTempleImage, pavagadhTempleImage];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImg((prev) => (prev + 1) % heroImages.length);
+    }, 10000);
+    return () => clearInterval(timer);
+  }, [heroImages.length]);
+
   return (
     <div className="bg-background text-on-surface selection:bg-primary-container selection:text-on-primary-container">
       <Navbar />
       <main>
         {/* Hero */}
-        <section id="home" className="relative min-h-[795px] flex items-center overflow-hidden px-6 md:px-10 py-16 md:py-20 max-w-screen-2xl mx-auto scroll-mt-28">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full pt-8 md:pt-10">
-            <div className="lg:col-span-7 space-y-8 z-10">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-surface-container-high rounded-full">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
+        <section id="home" className="relative min-h-[90vh] flex items-center overflow-hidden px-6 md:px-10 py-16 scroll-mt-28 bg-white">
+          <div className="max-w-screen-2xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-16 items-center w-full relative z-10">
+            <motion.div 
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, ease: "circOut" }}
+              className="lg:col-span-7 space-y-10"
+            >
+              <div className="inline-flex items-center gap-3 px-5 py-2 bg-stone-50 border border-stone-100 rounded-full shadow-sm">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-20"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
                 </span>
-                <span className="text-[0.6875rem] font-bold tracking-widest uppercase text-on-surface-variant font-label">SYSTEM LIVE: ACTIVE PREDICTION</span>
+                <span className="text-[10px] font-black tracking-[0.3em] uppercase text-[#4B2E2B]/60 font-label">Neural-Net Active Tracking</span>
               </div>
-              <h1 className="text-5xl md:text-7xl lg:text-8xl font-headline font-bold tracking-tighter text-on-surface leading-[0.95]">
-                Real-Time <br /><span className="text-primary italic">Crowd Intelligence</span> <br />for Safer Pilgrimage
+              
+              <h1 className="text-6xl md:text-8xl font-headline font-black tracking-tighter text-[#4B2E2B] leading-[0.85]">
+                AlertX <br /><span className="text-primary italic">Intelligence.</span>
               </h1>
-              <p className="text-lg md:text-xl text-on-surface-variant max-w-xl font-body leading-relaxed">
-                Leveraging advanced neural networks to predict density peaks before they happen. Precision engineering for the world's most sacred gathering sites.
+              
+              <p className="text-xl md:text-2xl text-[#4B2E2B]/60 max-w-xl font-body leading-relaxed font-light">
+                Engineering safety through predictive kinetics. Anticipating crowd density before it forms, protecting millions across sacred corridors with precision AI.
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                <Link to="/ambaji">
-                  <button className="bg-gradient-to-br from-primary to-primary-container text-on-primary px-8 py-4 rounded-2xl font-headline font-bold text-lg active:scale-95 transition-all shadow-lg">
-                    Explore Dashboards
-                  </button>
+              
+              <div className="flex flex-col sm:flex-row gap-6 pt-6">
+                <Link to="/pavagadh">
+                  <motion.button 
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    className="bg-[#4B2E2B] text-white px-10 py-5 rounded-[2rem] font-headline font-black text-xs uppercase tracking-[0.3em] shadow-2xl shadow-[#4B2E2B]/20 transition-all"
+                  >
+                    Enter Observatory
+                  </motion.button>
                 </Link>
-                <button 
+                <motion.button 
+                  whileHover={{ backgroundColor: "#F5F5F7" }}
                   onClick={() => setShowSpecs(true)}
-                  className="border border-outline-variant/40 hover:bg-surface-container-low text-primary px-8 py-4 rounded-2xl font-headline font-bold text-lg transition-all"
+                  className="bg-white border border-stone-200 text-[#4B2E2B] px-10 py-5 rounded-[2rem] font-headline font-black text-xs uppercase tracking-[0.3em] transition-all"
                 >
-                  Technical Specs
-                </button>
+                  System Specs
+                </motion.button>
               </div>
-            </div>
-            <div className="lg:col-span-5">
-              <div className="h-[430px] overflow-hidden rounded-[2rem] border border-[#f6e9dd] bg-[#e8d6c2] shadow-[0_30px_80px_rgba(75,46,43,0.22)] lg:h-[620px]">
-                <img className="h-full w-full object-cover object-center grayscale-[8%] sepia-[6%] contrast-[1.06]" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAiOwey2AwL5EhiGol2n_BUblOD9WsrfUVxGr78zH19RzCyJD3hhrCZSEXPcTxa2M--aGFhO9GNxxxJmgYilLaxD51AhLqk4j-Ry7OOixQZMdyuuqSLFypa5C5rjfy-tPNJEZRdE0s3RUu69JIia94i6y77mkk9dUwtM2Ug_Odz0wLHyk9aF123PRQUYKUl3xqIT-wZ9zsbiJHMew2PWjBzEayDTLHm_e8EjtbAGZdOsYESQk5Z2vro0gY8l6QlCKGOhYPi-8C8vjY" alt="Temple crowd monitoring command view" />
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1, ease: "circOut" }}
+              className="lg:col-span-5 relative"
+            >
+              <div className="relative z-10 h-[500px] lg:h-[700px] w-full rounded-[4rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(75,46,43,0.3)] bg-stone-100">
+                <AnimatePresence mode="wait">
+                  <motion.img 
+                    key={currentImg}
+                    src={heroImages[currentImg]} 
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 1, ease: "easeInOut" }}
+                    alt="AlertX Strategic Monitoring"
+                    className="w-full h-full object-cover absolute inset-0"
+                  />
+                </AnimatePresence>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#4B2E2B]/20 to-transparent pointer-events-none" />
+                
+                {/* Progress Indicators */}
+                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+                   {heroImages.map((_, i) => (
+                     <div 
+                       key={i} 
+                       className={`h-1 rounded-full transition-all duration-500 ${i === currentImg ? "w-8 bg-white" : "w-2 bg-white/30"}`} 
+                     />
+                   ))}
+                </div>
               </div>
-            </div>
+              <div className="absolute -top-10 -right-10 w-64 h-64 bg-primary/10 rounded-full blur-[100px] -z-0" />
+            </motion.div>
           </div>
-          <div className="absolute top-20 right-[-10%] w-[40rem] h-[40rem] bg-primary/5 rounded-full blur-[120px] -z-10"></div>
         </section>
 
-        {/* Temple Selection */}
-        <section id="sites" className="py-24 bg-surface-container-low scroll-mt-28">
+        {/* Dynamic Observatory Explorer - Alternative to standard cards */}
+        <section id="sites" className="py-32 bg-[#FAFAFA] overflow-hidden">
           <div className="max-w-screen-2xl mx-auto px-6 md:px-10">
-            <div className="mb-16">
-              <h2 className="text-[0.75rem] font-bold tracking-[0.3em] text-secondary uppercase font-label mb-4">Active Observatories</h2>
-              <h3 className="text-4xl md:text-5xl font-headline font-bold text-on-surface tracking-tight">Intelligence Nodes</h3>
+            <div className="flex flex-col md:flex-row justify-between items-end mb-24 gap-8">
+              <div className="max-w-2xl">
+                <h2 className="text-[10px] font-black tracking-[0.4em] text-primary uppercase mb-6 flex items-center gap-4">
+                  <div className="h-[2px] w-12 bg-primary/30" /> Active Deployments
+                </h2>
+                <h3 className="text-5xl md:text-7xl font-headline font-black text-[#4B2E2B] tracking-tighter leading-none">The Observatory <br/>Network.</h3>
+              </div>
+              <p className="text-lg text-[#4B2E2B]/50 font-body max-w-xs leading-relaxed">
+                Localized AI agents tailored to specific architectural bottleneck dynamics.
+              </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {temples.map((temple) => (
-                <Link key={temple.id} to={temple.to} className="group flex flex-col bg-white rounded-[2.5rem] overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 border border-[#C08552]/10 p-3">
-                  <div className="relative h-[250px] rounded-[1.8rem] overflow-hidden mb-6">
-                    <img src={temple.img} className="absolute inset-0 w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" alt={temple.name} />
-                    <div className="absolute top-4 left-4 bg-white/90 backdrop-blur rounded-full px-3 py-1 flex items-center gap-2 border border-white/20">
-                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                       <span className="text-[8px] font-black text-[#4B2E2B] uppercase tracking-widest">Active</span>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              {temples.map((temple, idx) => (
+                <motion.div
+                  key={temple.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: idx * 0.1 }}
+                  className="group relative h-[450px] rounded-[3.5rem] overflow-hidden cursor-pointer bg-white border border-stone-200 hover:border-primary/20 transition-all duration-500 shadow-sm hover:shadow-2xl"
+                >
+                  <Link to={temple.to} className="absolute inset-0 flex">
+                    <div className="w-1/2 h-full overflow-hidden relative">
+                       <img 
+                         src={temple.img} 
+                         className="absolute inset-0 w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0 group-hover:scale-110" 
+                         alt={temple.name} 
+                       />
+                       <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-40 transition-opacity" />
                     </div>
-                  </div>
-                  
-                  <div className="px-5 pb-5 flex-1 flex flex-col">
-                    <span className="text-[10px] font-black text-primary uppercase tracking-[0.3em] mb-2 font-label">Site GJ-{temple.id.slice(-3)}</span>
-                    <h4 className="text-2xl font-headline font-black text-[#4B2E2B] leading-none mb-3 group-hover:text-primary transition-colors">{temple.name}</h4>
-                    <p className="text-[10px] text-[#4B2E2B]/50 leading-relaxed font-body">
-                      Monitoring real-time corridor pressure and entry flow dynamic.
-                    </p>
-                    
-                    <div className="mt-auto pt-4 flex items-center justify-between">
-                       <span className="text-[8px] font-black text-secondary uppercase tracking-widest">Observatory</span>
-                       <div className="w-8 h-8 rounded-xl bg-primary/5 text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
-                          <span className="material-symbols-outlined text-xs">rocket_launch</span>
+                    <div className="w-1/2 h-full p-12 flex flex-col justify-between bg-white group-hover:bg-stone-50 transition-colors">
+                       <div>
+                          <p className="text-[10px] font-black tracking-[0.3em] text-primary uppercase mb-4 decoration-primary/30 underline underline-offset-4">GJ-{temple.id.slice(-3)}</p>
+                          <h4 className="text-3xl font-headline font-black text-[#4B2E2B] tracking-tighter leading-tight mb-4">{temple.name}</h4>
+                          <p className="text-xs text-[#4B2E2B]/40 leading-relaxed font-body font-medium">
+                            {temple.desc}
+                          </p>
+                       </div>
+                       
+                       <div className="flex items-center justify-between">
+                          <span className="text-[9px] font-black text-[#4B2E2B]/30 uppercase tracking-widest group-hover:text-primary transition-colors">Live Feed Agent</span>
+                          <motion.div 
+                            whileHover={{ x: 5 }}
+                            className="w-12 h-12 rounded-full border border-stone-200 flex items-center justify-center text-[#4B2E2B] group-hover:bg-primary group-hover:text-white group-hover:border-primary transition-all shadow-sm"
+                          >
+                             <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                          </motion.div>
                        </div>
                     </div>
-                  </div>
-                </Link>
+                  </Link>
+                </motion.div>
               ))}
-
             </div>
           </div>
         </section>
 
         {/* Global Statistics */}
-        <section className="py-24 bg-[#4B2E2B] relative overflow-hidden">
-           <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] -z-0 opacity-50" />
-           <div className="max-w-screen-2xl mx-auto px-6 md:px-10 relative z-10 text-center">
-              <p className="text-[10px] font-black tracking-[0.4em] uppercase text-primary mb-6">Network Topology</p>
-              <h2 className="text-4xl md:text-6xl font-headline font-black text-white mb-16 tracking-tighter">Live Sentinel Statistics</h2>
+        <section className="py-32 bg-[#4B2E2B] relative overflow-hidden">
+           <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-primary/20 rounded-full blur-[160px] -z-0 opacity-40" />
+           <div className="max-w-screen-2xl mx-auto px-6 md:px-10 relative z-10">
+              <div className="text-center mb-24">
+                <h2 className="text-[10px] font-black tracking-[0.5em] uppercase text-primary mb-6">Network Health</h2>
+                <h2 className="text-5xl md:text-7xl font-headline font-black text-white tracking-tighter leading-none">AlertX Global <br/>Footprint.</h2>
+              </div>
               <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                  {[
-                   { label: "Active Observers", value: "4", unit: "Temples", icon: "visibility" },
-                   { label: "AI Processors", value: "112", unit: "NPU Nodes", icon: "memory" },
-                   { label: "Dataset Points", value: "40k+", unit: "Real Samples", icon: "dataset" },
-                   { label: "Sensor Array", value: "840", unit: "IoT Units", icon: "sensors" }
-                 ].map((s) => (
-                   <div key={s.label} className="p-8 rounded-3xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                      <div className="w-12 h-12 rounded-2xl bg-primary/20 flex items-center justify-center text-primary mb-6 mx-auto">
-                         <span className="material-symbols-outlined">{s.icon}</span>
+                   { label: "Active Nodes", value: "04", unit: "Observatories", icon: "visibility" },
+                   { label: "Neural Compute", value: "112", unit: "NPU Cluster", icon: "memory" },
+                   { label: "Predictive Sets", value: "40k", unit: "Data Targets", icon: "dataset" },
+                   { label: "Sensor Grid", value: "840", unit: "Edge Units", icon: "sensors" }
+                 ].map((s, i) => (
+                   <motion.div 
+                     key={s.label}
+                     initial={{ opacity: 0, y: 20 }}
+                     whileInView={{ opacity: 1, y: 0 }}
+                     transition={{ duration: 0.5, delay: i * 0.1 }}
+                     className="p-10 rounded-[2.5rem] bg-white/5 border border-white/10 backdrop-blur-xl group hover:bg-white/10 transition-all duration-500"
+                   >
+                      <div className="w-14 h-14 rounded-2xl bg-white/10 flex items-center justify-center text-primary mb-8 group-hover:scale-110 transition-transform">
+                         <span className="material-symbols-outlined text-2xl">{s.icon}</span>
                       </div>
-                      <p className="text-4xl font-headline font-black text-white mb-1">{s.value}</p>
-                      <p className="text-[10px] font-bold text-white/50 uppercase tracking-widest">{s.label}</p>
-                   </div>
+                      <div className="space-y-1">
+                        <p className="text-5xl font-headline font-black text-white">{s.value}</p>
+                        <p className="text-[10px] font-black text-primary uppercase tracking-[0.3em]">{s.unit}</p>
+                      </div>
+                      <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest mt-6">{s.label}</p>
+                   </motion.div>
                  ))}
               </div>
            </div>
         </section>
 
-        {/* Features */}
-        <section id="features" className="py-32 px-6 md:px-10 bg-background overflow-hidden scroll-mt-28">
+        {/* Features - Depth based Interaction */}
+        <section id="features" className="py-40 px-6 md:px-10 bg-white overflow-hidden scroll-mt-28">
           <div className="max-w-screen-2xl mx-auto">
-            <div className="text-center max-w-3xl mx-auto mb-20">
-              <h2 className="text-[0.75rem] font-bold tracking-[0.3em] text-primary uppercase font-label mb-6">Core Capabilities</h2>
-              <h3 className="text-4xl md:text-6xl font-headline font-bold text-on-surface tracking-tighter">Engineered for Human Safety</h3>
+            <div className="flex flex-col lg:flex-row justify-between items-end mb-28">
+              <div className="max-w-3xl">
+                <h2 className="text-[10px] font-black tracking-[0.4em] text-[#4B2E2B]/40 uppercase mb-6">Observatory Modules</h2>
+                <h3 className="text-5xl md:text-8xl font-headline font-black text-[#4B2E2B] tracking-tighter leading-[0.85]">Core <br/><span className="text-primary italic">Intelligence.</span></h3>
+              </div>
+              <p className="text-xl text-[#4B2E2B]/50 font-body max-w-sm leading-relaxed mb-4">
+                Redefining crowd safety through precision engineering and real-time inference.
+              </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
               {[
-                { icon: "query_stats", title: "Real-Time Prediction", desc: "Patented 'Predictive Window' algorithms forecast crowd surges 45 minutes before they reach critical density levels." },
-                { icon: "hub", title: "Agency Coordination", desc: "Unified communication hub for police, medical, and temple management teams to act on synchronized data." },
-                { icon: "emergency_home", title: "Early Risk Alerts", desc: "Automated visual and auditory alert systems triggered by algorithmic anomaly detection at entry/exit points." },
-              ].map((f) => (
-                <div key={f.title} className="bg-surface-container rounded-2xl p-10 flex flex-col gap-6 group hover:bg-surface-container-highest transition-colors duration-300">
-                  <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+                { icon: "query_stats", title: "Predictive Window", desc: "Proprietary algorithms that forecast density shifts 45 minutes in advance, enabling proactive perimeter control." },
+                { icon: "hub", title: "Multi-Agency Bridge", desc: "A singular, high-fidelity command interface synchronizing Police, Medical, and Temple management teams." },
+                { icon: "emergency_home", title: "Kinetic Anomaly", desc: "Neural-link detection for erratic movement patterns at bottleneck points, triggering automated safety protocols." },
+              ].map((f, i) => (
+                <motion.div 
+                  key={f.title} 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5, delay: i * 0.1 }}
+                  className="bg-stone-50 rounded-[3rem] p-12 flex flex-col gap-10 border border-stone-100 group transition-all duration-500 hover:shadow-2xl hover:bg-white hover:-translate-y-2"
+                >
+                  <div className="w-16 h-16 rounded-3xl bg-white shadow-sm border border-stone-100 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
                     <span className="material-symbols-outlined text-3xl">{f.icon}</span>
                   </div>
-                  <h4 className="text-2xl font-headline font-bold text-on-surface">{f.title}</h4>
-                  <p className="text-on-surface-variant leading-relaxed">{f.desc}</p>
-                </div>
+                  <div className="space-y-4 flex-1">
+                    <h4 className="text-3xl font-headline font-black text-[#4B2E2B] tracking-tight">{f.title}</h4>
+                    <p className="text-sm text-[#4B2E2B]/50 leading-relaxed font-body font-medium">{f.desc}</p>
+                  </div>
+                  <div className="w-10 h-1 bg-[#4B2E2B]/10 rounded-full group-hover:bg-primary group-hover:w-full transition-all duration-500" />
+                </motion.div>
               ))}
             </div>
           </div>
@@ -174,9 +270,9 @@ export default function LandingPage() {
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest mb-8">
                    <span className="material-symbols-outlined text-sm">science</span> Operational Framework
                 </div>
-                <h2 className="text-5xl md:text-6xl font-headline font-black text-[#4B2E2B] mb-8 tracking-tighter leading-[0.9]">The Science <br/><span className="text-secondary">of Flow</span></h2>
+                <h2 className="text-5xl md:text-6xl font-headline font-black text-[#4B2E2B] mb-8 tracking-tighter leading-[0.9]">The Science <br/><span className="text-secondary">of Prediction</span></h2>
                 <p className="text-lg text-[#4B2E2B]/60 font-body leading-relaxed mb-12 max-w-xl">
-                  alertX merges fluid dynamics with neural-link predictive modeling. We don't just count crowds; we simulate the kinetic pressure of every pilgrim to prevent the disaster before it starts.
+                  AlertX merges fluid dynamics with neural-link predictive modeling. We don't just count crowds; we simulate the kinetic pressure of every pilgrim to prevent the disaster before it starts.
                 </p>
                 
                 <div className="space-y-8">

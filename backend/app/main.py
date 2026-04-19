@@ -7,6 +7,7 @@ import datetime
 import asyncio
 import pandas as pd
 import os
+import random
 
 from .ml.model_placeholder import CrowdPredictionModel
 from .services.cpi_engine import calculate_cpi, determine_risk_level, determine_buildup
@@ -24,38 +25,60 @@ app.add_middleware(
 
 # In-memory storage for hackathon simplicity
 alerts_db = []
-logs_db = [
-    {
-        "id": str(uuid.uuid4()),
-        "timestamp": (datetime.datetime.now() - datetime.timedelta(minutes=45)).isoformat(),
-        "payload": {
-            "cpi": 4.2, "risk": "Moderate", "predicted_cpi": 3.8, "predicted_window_min": 25, "buildup": "Normal", "confidence": "88%",
-            "raw_data": {"timestamp": (datetime.datetime.now() - datetime.timedelta(minutes=45)).isoformat(), "location": "Somnath"},
-            "ai_coordination": {"alert_summary": "Morning crowd surge handled via alternate exits."}
-        }
-    },
-    {
-        "id": str(uuid.uuid4()),
-        "timestamp": (datetime.datetime.now() - datetime.timedelta(minutes=30)).isoformat(),
-        "payload": {
-            "cpi": 8.7, "risk": "Severe", "predicted_cpi": 9.2, "predicted_window_min": 8, "buildup": "Genuine", "confidence": "94%",
-            "raw_data": {"timestamp": (datetime.datetime.now() - datetime.timedelta(minutes=30)).isoformat(), "location": "Somnath"},
-            "ai_coordination": {"alert_summary": "Sector 3 bottleneck detected. Police deployment recommended."}
-        }
-    },
-     {
-        "id": str(uuid.uuid4()),
-        "timestamp": (datetime.datetime.now() - datetime.timedelta(minutes=10)).isoformat(),
-        "payload": {
-            "cpi": 5.1, "risk": "Normal", "predicted_cpi": 4.2, "predicted_window_min": 40, "buildup": "Normal", "confidence": "91%",
-            "raw_data": {"timestamp": (datetime.datetime.now() - datetime.timedelta(minutes=10)).isoformat(), "location": "Somnath"},
-            "ai_coordination": {"alert_summary": "Situation stabilized. Normal operations resumed."}
-        }
-    }
-]
+logs_db = []
 
 # Global ML Model Instance
 ml_model = CrowdPredictionModel()
+
+@app.get("/post_mortem")
+async def generate_post_mortem():
+    if len(logs_db) < 10:
+        return {"status": "error", "message": "Insufficient data"}
+    
+    # Take the last 15 events
+    recent_events = logs_db[-15:]
+    
+    timeline_data = []
+    for e in recent_events:
+        payload = e["payload"]
+        time_str = e["timestamp"].split("T")[1][:8]
+        risk = payload.get("risk", "Unknown")
+        cpi = payload.get("cpi", 0)
+        action = payload.get("ai_coordination", {}).get("alert_summary", "")
+        timeline_data.append(f"[{time_str}] CPI: {cpi}, Risk: {risk}, AI Action: {action}")
+        
+    prompt = f"""
+    You are the Senior Analyst for the Stampede Sentinel system.
+    Review the following historical crowd telemetry timeline from the last few minutes:
+    
+    {chr(10).join(timeline_data)}
+    
+    Provide a professional post-mortem structural analysis. Include:
+    1. SUMMARY: What happened? Was it a genuine crush build-up or a self-resolving surge?
+    2. ACTIONS TAKEN: What did the local sectors (Police/Temple/Transport) do?
+    3. EFFECTIVENESS: How did their actions affect the Pressure Index (CPI)?
+    4. AI INSIGHT: What could have been done better based on the predictive model?
+    
+    Format nicely as plain text without Markdown asterisks. Keep sizes concise.
+    """
+    
+    try:
+        from groq import Groq
+        client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+        
+        completion = client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[
+                {"role": "system", "content": "You are a highly analytical crowd disaster prevention AI system."},
+                {"role": "user", "content": prompt}
+            ],
+            temperature=0.3,
+            max_tokens=600
+        )
+        report = completion.choices[0].message.content
+        return {"status": "success", "report": report}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
 
 # WebSocket Manager
 class ConnectionManager:
@@ -270,14 +293,25 @@ class SimulationManager:
                 features['timestamp'] = datetime.datetime.now().isoformat()
                 features['location'] = temple.capitalize() 
 
-                # Perform prediction logic directly with model instance
+                # perform prediction
                 prediction = ml_model.predict(features)
                 predicted_cpi = prediction['predicted_cpi']
+                cpi = float(calculate_cpi(features))
+
+                # ⚠️ Force Risk Logic (For Demo Item #7)
+                if getattr(self, "force_risk", False):
+                    cpi = 85.0 + (random.random() * 10)
+                    predicted_cpi = 92.0
+                    features['queue_density_pax_per_m2'] = 5.8
+                    features['entry_flow_rate_pax_per_min'] = 140.0
                 
-                cpi = float(calculate_cpi(features)) # Ensure float
                 risk = determine_risk_level(cpi)
                 buildup = determine_buildup(features, cpi) 
                 predicted_window_min = float(prediction['crush_window'])
+                if getattr(self, "force_risk", False):
+                    predicted_window_min = 4.0
+                    buildup = "Genuine"
+                
                 confidence = prediction['confidence']
                 
                 # 🛡️ Prolonged High Risk Tracking
@@ -286,10 +320,10 @@ class SimulationManager:
                 else:
                     self.high_risk_counters[websocket] = 0
                 
-                # Dynamic Velocity calculation: (entry_flow / 60) for m/s approximation
+                # Dynamic Velocity calculation
                 flow_vel = features.get('entry_flow_rate_pax_per_min', 0) / 60.0
 
-                print(f"📊 [{temple.upper()}] CPI: {cpi:.2f} | PRED: {predicted_cpi:.2f} | COUNTER: {self.high_risk_counters[websocket]}")
+                print(f"📊 [{temple.upper()}] CPI: {cpi:.2f} | PRED: {predicted_cpi:.2f} | FORCED: {getattr(self, 'force_risk', False)}")
 
                 response_payload = {
                     "cpi": round(cpi, 2),
@@ -327,43 +361,57 @@ class SimulationManager:
                     }
                     response_payload["alert"] = new_alert
 
+                # 5. Log event to Archive (REQUIRED FOR REPLAY)
+                archive_entry = {
+                    "id": str(uuid.uuid4()),
+                    "timestamp": datetime.datetime.now().isoformat(),
+                    "payload": response_payload
+                }
+                logs_db.append(archive_entry)
+                if len(logs_db) > 500: logs_db.pop(0)
+
                 await websocket.send_json({
                     "type": "crowd_update",
                     "data": response_payload
                 })
 
-                await asyncio.sleep(5)
+                await asyncio.sleep(2) # Faster simulation for better experience
         except asyncio.CancelledError:
             pass
         except Exception as e:
             print(f"Simulation error for {temple}: {e}")
 
 import subprocess
-video_proc = None
+import sys
+# Global state for tracking the one active simulation task globally
 sim_manager = SimulationManager()
+global_sim_task = None
+global_video_proc = None
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    global video_proc
+    global global_sim_task, global_video_proc
     await manager.connect(websocket)
-    sim_task = None
     try:
         while True:
             data = await websocket.receive_text()
             message = json.loads(data)
             
             if message.get("type") == "start_simulation":
-                # Stop existing task if any
-                if sim_task:
-                    sim_task.cancel()
-                    sim_task = None
+                # Globally enforce a SINGLE active simulation across all tabs/connections
+                if global_sim_task:
+                    global_sim_task.cancel()
+                    global_sim_task = None
                 
-                if video_proc:
+                if global_video_proc:
                     try:
-                        video_proc.terminate()
+                        global_video_proc.terminate()
                     except:
                         pass
-                    video_proc = None
+                    global_video_proc = None
+                
+                # Clear historical logs so you don't mix datasets (e.g., Somnath & Pavagadh clash)
+                logs_db.clear()
                 
                 temple = message.get("temple", "somnath")
                 mode = message.get("mode", "dataset")
@@ -371,27 +419,34 @@ async def websocket_endpoint(websocket: WebSocket):
                 if mode == "video":
                     print(f"🎬 Starting LIVE VIDEO MODE for {temple}")
                     script_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "final", "crowd.py")
-                    video_proc = subprocess.Popen(["python", script_path])
+                    global_video_proc = subprocess.Popen([sys.executable, script_path])
                 else:
-                    sim_task = asyncio.create_task(sim_manager.run_simulation(websocket, temple))
+                    global_sim_task = asyncio.create_task(sim_manager.run_simulation(websocket, temple))
                 
+            elif message.get("type") == "toggle_force_risk":
+                status = message.get("status", False)
+                sim_manager.force_risk = status
+                print(f"⚠️ NEAR-CRUSH SIMULATION {'ENABLED' if status else 'DISABLED'}")
+
             elif message.get("type") == "stop_simulation":
-                if sim_task:
-                    sim_task.cancel()
-                    sim_task = None
-                if video_proc:
+                if global_sim_task:
+                    global_sim_task.cancel()
+                    global_sim_task = None
+                if global_video_proc:
                     try:
-                        video_proc.terminate()
+                        global_video_proc.terminate()
                     except:
                         pass
-                    video_proc = None
+                    global_video_proc = None
 
     except WebSocketDisconnect:
-        if sim_task:
-            sim_task.cancel()
+        if global_sim_task:
+            global_sim_task.cancel()
+            global_sim_task = None
         manager.disconnect(websocket)
     except Exception as e:
         print(f"WS Error: {e}")
-        if sim_task:
-            sim_task.cancel()
+        if global_sim_task:
+            global_sim_task.cancel()
+            global_sim_task = None
         manager.disconnect(websocket)

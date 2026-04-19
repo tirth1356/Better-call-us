@@ -9,7 +9,6 @@ export default function Navbar({ title = "alertX", links, cta }) {
     { label: "Home", href: "#home", sectionId: "home" },
     { label: "Temples", href: "#sites", sectionId: "sites" },
     { label: "Features", href: "#features", sectionId: "features" },
-    { label: "Flow", href: "#flow", sectionId: "flow" },
   ];
   const navLinks = useMemo(() => links || defaultLinks, [links]);
 
@@ -83,31 +82,30 @@ export default function Navbar({ title = "alertX", links, cta }) {
   };
 
   return (
-    <nav className="sticky top-0 z-50 px-4 pt-4 sm:px-6 lg:px-10">
-      <div className="max-w-screen-2xl mx-auto">
-        <div className="relative overflow-hidden rounded-full border border-white/30 bg-[rgba(255,248,241,0.36)] px-4 py-3 shadow-[0_18px_45px_rgba(75,46,43,0.12)] backdrop-blur-2xl supports-[backdrop-filter]:bg-[rgba(255,248,241,0.28)] sm:px-5 lg:px-7">
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,rgba(255,255,255,0.28),rgba(255,255,255,0.06)_35%,rgba(192,133,82,0.12)_100%)]" />
+    <nav className="sticky top-0 z-[100] px-4 pt-6 sm:px-6 lg:px-10 pointer-events-none">
+      <div className="max-w-screen-2xl mx-auto pointer-events-auto">
+        <div className="relative overflow-hidden rounded-full premium-glass px-4 py-3 shadow-[0_20px_50px_rgba(75,46,43,0.1)] transition-all duration-500 border border-white/40">
           <div className="relative flex items-center justify-between gap-3">
-            <Link to="/" className="flex min-w-0 items-center gap-3">
-              <span className="flex h-11 w-11 items-center justify-center rounded-full border border-white/35 bg-white/25 text-primary shadow-[inset_0_1px_0_rgba(255,255,255,0.45)]">
-                <span className="material-symbols-outlined text-[1.6rem]" style={{ fontVariationSettings: "'FILL' 1" }}>visibility</span>
+            <Link to="/" className="flex min-w-0 items-center gap-4 group">
+              <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#4B2E2B] text-white shadow-xl transition-transform group-hover:rotate-12 group-active:scale-90">
+                <span className="material-symbols-outlined text-[1.4rem]">architecture</span>
               </span>
-              <span className="min-w-0">
-                <span className="block truncate font-headline text-base font-bold tracking-tight text-[#4B2E2B] sm:text-xl">{title}</span>
-                <span className="hidden text-[0.6rem] uppercase tracking-[0.32em] text-[#855324]/70 sm:block">Predictive Crowd Systems</span>
-              </span>
+              <div className="min-w-0">
+                <span className="block truncate font-headline text-lg font-black tracking-tighter text-[#4B2E2B] leading-none uppercase">AlertX</span>
+                <span className="text-[7px] uppercase tracking-[0.4em] font-black text-primary leading-none mt-1 block">Live Intelligence Hub</span>
+              </div>
             </Link>
 
-            <div className="hidden lg:flex items-center rounded-full border border-white/25 bg-white/12 px-2 py-2">
+            <div className="hidden lg:flex items-center gap-1 bg-stone-100/50 p-1.5 rounded-full border border-stone-200/50">
               {navLinks.map((link) =>
                 link.href ? (
                   <a
                     key={link.sectionId || link.label}
                     href={link.href}
-                    className={`rounded-full px-5 py-2 font-headline text-xs font-semibold uppercase tracking-[0.22em] transition-all duration-300 ${
+                    className={`rounded-full px-6 py-2.5 font-headline text-[9px] font-black uppercase tracking-[0.25em] transition-all duration-300 ${
                       isActiveLink(link)
-                        ? "bg-[#4B2E2B] text-[#FFF8F1] shadow-[0_10px_24px_rgba(75,46,43,0.18)]"
-                        : "text-[#4B2E2B]/72 hover:bg-white/25 hover:text-[#4B2E2B]"
+                        ? "bg-[#4B2E2B] text-white shadow-lg"
+                        : "text-[#4B2E2B]/50 hover:text-[#4B2E2B] hover:bg-white"
                     }`}
                   >
                     {link.label}
@@ -116,10 +114,10 @@ export default function Navbar({ title = "alertX", links, cta }) {
                   <Link
                     key={link.to}
                     to={link.to}
-                    className={`rounded-full px-5 py-2 font-headline text-xs font-semibold uppercase tracking-[0.22em] transition-all duration-300 ${
+                    className={`rounded-full px-6 py-2.5 font-headline text-[9px] font-black uppercase tracking-[0.25em] transition-all duration-300 ${
                       isActiveLink(link)
-                        ? "bg-[#4B2E2B] text-[#FFF8F1] shadow-[0_10px_24px_rgba(75,46,43,0.18)]"
-                        : "text-[#4B2E2B]/72 hover:bg-white/25 hover:text-[#4B2E2B]"
+                        ? "bg-[#4B2E2B] text-white shadow-lg"
+                        : "text-[#4B2E2B]/50 hover:text-[#4B2E2B] hover:bg-white"
                     }`}
                   >
                     {link.label}
@@ -128,23 +126,24 @@ export default function Navbar({ title = "alertX", links, cta }) {
               )}
             </div>
 
-            <div className="hidden sm:block">
-              <Link to={cta?.to || "/ambaji"}>
-                <button className="rounded-full border border-white/35 bg-[#4B2E2B] px-5 py-3 font-headline text-xs font-bold uppercase tracking-[0.22em] text-[#FFF8F1] shadow-[0_16px_30px_rgba(75,46,43,0.22)] transition-transform active:scale-95">
-                  {cta?.label || "View Analytics"}
-                </button>
-              </Link>
-            </div>
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:block">
+                <Link to={cta?.to || "/pavagadh"}>
+                  <button className="rounded-full bg-[#4B2E2B] px-8 py-3.5 font-headline text-[9px] font-black uppercase tracking-[0.3em] text-white shadow-2xl shadow-[#4B2E2B]/20 transition-all hover:scale-105 active:scale-95">
+                    {cta?.label || "Launch Observatory"}
+                  </button>
+                </Link>
+              </div>
 
-            <button
-              type="button"
-              onClick={() => setIsMenuOpen((open) => !open)}
-              className="flex h-11 w-11 items-center justify-center rounded-full border border-white/35 bg-white/20 text-[#4B2E2B] lg:hidden"
-              aria-label="Toggle navigation menu"
-              aria-expanded={isMenuOpen}
-            >
-              <span className="material-symbols-outlined">{isMenuOpen ? "close" : "menu"}</span>
-            </button>
+              <button
+                type="button"
+                onClick={() => setIsMenuOpen((open) => !open)}
+                className="flex h-12 w-12 items-center justify-center rounded-full bg-stone-100 text-[#4B2E2B] lg:hidden border border-stone-200 active:scale-90 transition-all"
+                aria-label="Toggle navigation menu"
+              >
+                <span className="material-symbols-outlined text-xl">{isMenuOpen ? "close" : "sort"}</span>
+              </button>
+            </div>
           </div>
         </div>
 

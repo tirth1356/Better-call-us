@@ -13,6 +13,7 @@ import SectorCard from "../components/dashboard/SectorCard";
 import AiChatPanel from "../components/dashboard/AiChatPanel";
 import HistoryReplaySection from "../components/dashboard/HistoryReplaySection";
 import { useDashboardStore } from "../store/dashboardStore";
+import Footer from "../components/Footer";
 import { X, History, Activity } from "lucide-react";
 
 export default function SomnathDashboard() {
@@ -236,11 +237,7 @@ export default function SomnathDashboard() {
           {/* 📊 Integrated History Replay 📊 */}
           {showHistory && <HistoryReplaySection />}
 
-          <motion.div className="flex items-center justify-between pt-4 border-t border-[#C08552]/10 pb-8">
-            <p className="text-[10px] text-[#4B2E2B]/30 font-body uppercase tracking-widest">
-              © 2024 alertX. All rights reserved.
-            </p>
-          </motion.div>
+          <Footer />
         </motion.main>
       </div>
     </div>

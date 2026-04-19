@@ -4,7 +4,7 @@ import { Send, Bot, User, Sparkles } from "lucide-react";
 
 export default function AiChatPanel() {
   const [messages, setMessages] = useState([
-    { role: "bot", content: "I am your AI Sentinel. Ask me any 'What-If' scenarios like: 'What if the main gate is blocked?'" }
+    { role: "bot", content: "I am your AI Strategist. Ask me any 'What-If' scenarios like: 'What if the main gate is blocked?'" }
   ]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -33,30 +33,35 @@ export default function AiChatPanel() {
   };
 
   return (
-    <div className="rounded-2xl border border-[#C08552]/20 bg-white overflow-hidden flex flex-col h-[400px]">
-      <div className="px-6 py-4 border-b border-[#C08552]/10 flex items-center justify-between bg-[#FFF8F0]">
-        <div className="flex items-center gap-2">
-          <Sparkles className="text-[#C08552]" size={18} />
-          <h3 className="text-lg font-headline font-bold text-[#4B2E2B]">What-If Simulation Hub</h3>
+    <div className="rounded-[2.5rem] border border-[#C08552]/20 bg-white shadow-xl overflow-hidden flex flex-col h-full min-h-[500px]">
+      <div className="px-8 py-6 border-b border-[#C08552]/10 flex items-center justify-between bg-white relative">
+        <div className="flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-[#C08552]/10 flex items-center justify-center">
+             <Bot size={16} className="text-[#C08552]" strokeWidth={2.5} />
+          </div>
+          <div>
+             <p className="text-[10px] font-black tracking-[0.25em] uppercase text-[#4B2E2B]/40 mb-0.5">Tactical Support</p>
+             <h3 className="text-xl font-headline font-black text-[#4B2E2B] tracking-tight">AI Strategy Hub</h3>
+          </div>
         </div>
-        <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+        <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100">
+           <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+           <span className="text-[8px] font-black text-emerald-600 uppercase tracking-widest">Neural Link Active</span>
+        </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+      <div className="flex-1 overflow-y-auto p-8 space-y-6 bg-stone-50/30">
         <AnimatePresence>
           {messages.map((m, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
               className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
             >
-              <div className={`max-w-[80%] flex gap-2 ${m.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${m.role === "user" ? "bg-[#4B2E2B]" : "bg-[#C08552]/10"}`}>
-                  {m.role === "user" ? <User size={14} className="text-white" /> : <Bot size={14} className="text-[#C08552]" />}
-                </div>
-                <div className={`p-3 rounded-2xl text-xs leading-relaxed ${m.role === "user" ? "bg-[#4B2E2B] text-white rounded-tr-none" : "bg-[#FFF8F0] text-[#4B2E2B] border border-[#C08552]/10 rounded-tl-none"}`}>
-                  {m.content}
+              <div className={`max-w-[85%] flex gap-3 ${m.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
+                <div className={`p-4 rounded-[1.8rem] text-xs leading-relaxed shadow-sm border ${m.role === "user" ? "bg-[#4B2E2B] text-white border-[#4B2E2B] rounded-tr-none" : "bg-white text-[#4B2E2B] border-[#C08552]/10 rounded-tl-none"}`}>
+                  <p className="font-medium">{m.content}</p>
                 </div>
               </div>
             </motion.div>
@@ -64,30 +69,30 @@ export default function AiChatPanel() {
         </AnimatePresence>
         {isLoading && (
           <div className="flex justify-start">
-            <div className="bg-[#FFF8F0] p-3 rounded-2xl border border-[#C08552]/10 flex gap-2 items-center">
-              <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 rounded-full bg-[#C08552]" />
-              <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 rounded-full bg-[#C08552]" />
-              <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 rounded-full bg-[#C08552]" />
+            <div className="bg-white p-4 rounded-2xl border border-[#C08552]/10 flex gap-2 items-center shadow-sm">
+              <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1 }} className="w-1.5 h-1.5 rounded-full bg-[#C08552]" />
+              <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1, delay: 0.2 }} className="w-1.5 h-1.5 rounded-full bg-[#C08552]" />
+              <motion.div animate={{ opacity: [0.3, 1, 0.3] }} transition={{ repeat: Infinity, duration: 1, delay: 0.4 }} className="w-1.5 h-1.5 rounded-full bg-[#C08552]" />
             </div>
           </div>
         )}
       </div>
 
-      <div className="p-4 bg-stone-50 border-t border-[#C08552]/10">
-        <div className="relative">
+      <div className="p-6 bg-white border-t border-[#C08552]/10">
+        <div className="relative flex items-center gap-3">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={(e) => e.key === "Enter" && sendMessage()}
-            placeholder="What if terminal 2 closes?"
-            className="w-full pl-4 pr-12 py-3 rounded-xl border border-[#C08552]/20 text-xs focus:outline-none focus:border-[#C08552] bg-white transition-all shadow-sm"
+            placeholder="Simulate: 'Heavy rain at Gate 1'..."
+            className="flex-1 pl-6 pr-6 py-4 rounded-full border border-stone-200 text-xs font-bold focus:outline-none focus:border-[#C08552] bg-stone-50 transition-all font-body tracking-tight"
           />
           <button
             onClick={sendMessage}
-            className="absolute right-2 top-1.5 w-9 h-9 flex items-center justify-center rounded-lg bg-[#C08552] text-white hover:bg-[#8C5A3C] transition-colors"
+            className="w-12 h-12 flex items-center justify-center rounded-full bg-[#4B2E2B] text-white hover:bg-[#2d1b19] transition-all shadow-lg active:scale-95"
           >
-            <Send size={14} />
+            <Send size={16} strokeWidth={2.5} />
           </button>
         </div>
       </div>

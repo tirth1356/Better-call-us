@@ -127,15 +127,15 @@ while True:
         if track_id in prev_positions:
             prev_x, prev_y = prev_positions[track_id]
 
-            # ENTRY
-            direction = check_line_cross(prev_y, cy, entry_y)
-            if direction == "down" and track_id not in entry_ids:
+            # ENTRY (Count any crossing of the entry line)
+            direction_entry = check_line_cross(prev_y, cy, entry_y)
+            if direction_entry and track_id not in entry_ids:
                 window_entry_ids.add(track_id)
                 entry_ids.add(track_id)
 
-            # EXIT
-            direction = check_line_cross(prev_y, cy, exit_y)
-            if direction == "up" and track_id not in exit_ids:
+            # EXIT (Count any crossing of the exit line)
+            direction_exit = check_line_cross(prev_y, cy, exit_y)
+            if direction_exit and track_id not in exit_ids:
                 window_exit_ids.add(track_id)
                 exit_ids.add(track_id)
 
@@ -145,8 +145,12 @@ while True:
     # OCCUPANCY (Count all people between lines)
     # ==============================
     count_in_zone = 0
+    # The zone is bounded by entry_y at the top (or bottom depending on 0,0) and exit_y.
+    # Since ENTRY_LINE is at 0.4*height and EXIT is at 0.7*height, entry_y < exit_y
+    y_min, y_max = min(entry_y, exit_y), max(entry_y, exit_y)
+    
     for (cx, cy) in centers.values():
-        if zone_poly.contains(Point(cx, cy)):
+        if y_min <= cy <= y_max:
             count_in_zone += 1
     
     instant_counts.append(count_in_zone)

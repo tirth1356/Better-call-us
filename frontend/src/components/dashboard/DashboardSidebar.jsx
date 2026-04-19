@@ -70,9 +70,34 @@ export default function DashboardSidebar() {
         })}
       </nav>
 
+      {/* 🔴 Simulation Controls 🔴 */}
+      <div className="mt-8 pt-6 border-t border-[#C08552]/10 px-2">
+        <p className="text-[10px] font-black tracking-[0.25em] uppercase text-[#4B2E2B]/40 mb-4">Command Tools</p>
+        <button 
+           onClick={() => {
+             const isForced = !window.__forced_risk;
+             window.__forced_risk = isForced;
+             useDashboardStore.getState().toggleForceRisk(isForced);
+           }}
+           className={`w-full p-4 rounded-2xl flex items-center gap-3 border transition-all duration-300 ${
+             risk === "SEVERE" || risk === "CRITICAL"
+             ? "bg-red-600 border-red-700 text-white shadow-lg shadow-red-200" 
+             : "bg-[#4B2E2B] border-[#4B2E2B] text-white hover:bg-black"
+           }`}
+        >
+          <div className={`p-2 rounded-xl bg-white/20 ${risk === "SEVERE" || risk === "CRITICAL" ? "animate-pulse" : ""}`}>
+             <BarChart2 size={20} />
+          </div>
+          <div className="text-left">
+             <p className="text-xs font-headline font-black uppercase tracking-tighter">Stress Test AI</p>
+             <p className="text-[9px] text-white/60 font-medium">Trigger Near-Crush Demo</p>
+          </div>
+        </button>
+      </div>
+
       <div className="mt-auto pt-6 border-t border-[#C08552]/10">
         <p className="text-[9px] font-black text-center text-[#4B2E2B]/30 uppercase tracking-[0.2em] mb-1">Authenticated Terminal</p>
-        <p className="text-[9px] font-bold text-center text-[#C08552]">ID: Sentinel-GJ-0{activeLocation?.length || 0}</p>
+        <p className="text-[9px] font-bold text-center text-[#C08552]">ID: AlertX-GJ-0{activeLocation?.length || 0}</p>
       </div>
     </aside>
   );

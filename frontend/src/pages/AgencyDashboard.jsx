@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
+import Footer from "../components/Footer";
 import DashboardNav from "../components/dashboard/DashboardNav";
 import DashboardSidebar from "../components/dashboard/DashboardSidebar";
 import RiskCard from "../components/dashboard/RiskCard";
@@ -17,6 +18,7 @@ export default function AgencyDashboard() {
   const templeTitle = activeLocation ? activeLocation.charAt(0).toUpperCase() + activeLocation.slice(1) : "Somnath";
 
   let agency = {
+    id: "police",
     name: "District Police",
     icon: Shield,
     color: "#1e40af",
@@ -31,6 +33,7 @@ export default function AgencyDashboard() {
 
   if (pathname === "/trust") {
     agency = {
+      id: "temple",
       name: "Temple Trust",
       icon: Landmark,
       color: "#92400e",
@@ -44,6 +47,7 @@ export default function AgencyDashboard() {
     };
   } else if (pathname === "/transport") {
     agency = {
+      id: "transport",
       name: "GSRTC Transport",
       icon: Bus,
       color: "#065f46",
@@ -144,7 +148,7 @@ export default function AgencyDashboard() {
 
             {/* Right: Coordination Panel */}
             <div className="space-y-6">
-              <AgencyPanel />
+              <AgencyPanel filterId={agency.id} />
               
                 <div className="bg-[#4B2E2B] text-white rounded-3xl p-6 shadow-xl relative overflow-hidden h-[400px] flex flex-col">
                    <div className="relative z-10 flex-1 flex flex-col">
@@ -176,6 +180,7 @@ export default function AgencyDashboard() {
                 </div>
             </div>
           </div>
+          <Footer />
         </motion.main>
       </div>
     </div>

@@ -73,7 +73,7 @@ export default function Sidebar({ title = "Control Panel" }) {
 
       <div className="mt-auto pt-6 border-t border-[#C08552]/10">
         <p className="text-[9px] font-black text-center text-[#4B2E2B]/30 uppercase tracking-[0.2em] mb-1">Authenticated Terminal</p>
-        <p className="text-[9px] font-bold text-center text-[#C08552]">ID: Sentinel-GJ-{title.slice(0, 3).toUpperCase()}</p>
+        <p className="text-[9px] font-bold text-center text-[#C08552]">ID: AlertX-GJ-{title.slice(0, 3).toUpperCase()}</p>
       </div>
     </aside>
   );
